@@ -5,14 +5,24 @@
   "main": "index.js",
   "scripts": {
     "build": "rimraf dist && swc ./src -d dist",
+    "db:console": "docker-compose run postgres psql -h postgres -U postgres -d project_dev",
+    "db:migrate": "knex migrate:latest",
+    "docker:db:migrate": "docker composer run backend npm db:migrate",
+    "docker:db:migrate:undo": "docker compose run backend npx knex migrate:down",
+    "rebuild:be": "docker compose build backend && docker compose rm --force --stop backend && docker compose up -d backend",
+    "seed:dev": "docker compose run backend ./node_modules/.bin/ts-node scripts/seed/dev.ts",
     "start": "node dist/index.js",
     "start:docker": "npm run build && node --inspect=0.0.0.0 dist/index.js"
   },
   "author": "Simerus",
   "license": "ISC",
   "dependencies": {
+    "@prisma/client": "^5.7.1",
     "express": "^4.18.2",
+    "knex": "^3.1.0",
     "morgan": "^1.10.0",
+    "nanoid": "^3.3.7",
+    "pg": "^8.11.3",
     "typescript": "^5.3.3"
   },
   "devDependencies": {
@@ -25,7 +35,9 @@
     "@typescript-eslint/eslint-plugin": "^6.15.0",
     "@typescript-eslint/parser": "^6.15.0",
     "eslint": "^8.56.0",
+    "prisma": "^5.7.1",
     "rimraf": "^5.0.5",
+    "ts-node": "^10.9.2",
     "watchy": "^0.10.1"
   }
 }
